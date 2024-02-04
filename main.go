@@ -12,8 +12,7 @@ import (
 func main() {
 	db.DBConnection()
 
-	db.DB.AutoMigrate(models.User{})
-	db.DB.AutoMigrate(models.Task{})
+	db.DB.AutoMigrate(&models.User{}, &models.Device{}, &models.DeviceData{}, &models.Alert{})
 
 	r := mux.NewRouter()
 

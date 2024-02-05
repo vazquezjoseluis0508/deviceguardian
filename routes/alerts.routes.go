@@ -19,7 +19,7 @@ type AlertRequest struct {
 
 func RegisterAlertRoutes(r *mux.Router) {
 	r.HandleFunc("/alerts", CreateAlertHandler).Methods("POST")
-	r.HandleFunc("/alerts", ListAlertsByUserHandler).Methods("GET")
+	r.HandleFunc("/alerts-user", ListAlertsByUserHandler).Methods("GET")
 }
 
 func CreateAlertHandler(w http.ResponseWriter, r *http.Request) {

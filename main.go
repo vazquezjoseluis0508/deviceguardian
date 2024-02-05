@@ -19,10 +19,8 @@ func main() {
 
 	routes.RegisterRoutes(r)
 
-	// send message to the console
 	fmt.Println("Server running on port 3000")
 
 	http.ListenAndServe(":3000", r)
 
-	// Code
 }

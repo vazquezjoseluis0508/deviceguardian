@@ -13,5 +13,6 @@ func RegisterRoutes(r *mux.Router) {
 	s := r.PathPrefix("/api").Subrouter()
 	s.Use(middleware.JWTAuthentication)
 	RegisterUserRoutes(s)
+	RegisterDeviceRoutes(s)
 
 }

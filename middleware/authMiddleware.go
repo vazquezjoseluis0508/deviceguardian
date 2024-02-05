@@ -33,7 +33,8 @@ func JWTAuthentication(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "userID", claims.UserID)
+		// ctx := context.WithValue(r.Context(), "userID", claims.UserID)
+		ctx := context.WithValue(r.Context(), auth.UserContextKey, claims.UserID)
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)

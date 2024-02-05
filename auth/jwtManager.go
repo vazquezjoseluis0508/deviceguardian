@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"errors"
+	"net/http"
 	"os"
 	"time"
 
@@ -13,9 +15,13 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+type Key string
+
+const UserContextKey Key = "userID"
+
 // GenerateToken genera un nuevo token JWT para un usuario
 func GenerateToken(userID uint) (string, error) {
-	expirationTime := time.Now().Add(1 * time.Hour)
+	expirationTime := time.Now().Add(8 * time.Hour) // 8 horas de expiración
 	claims := &Claims{
 		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
@@ -49,4 +55,12 @@ func ValidateToken(tokenString string) (*Claims, error) {
 	}
 
 	return claims, nil
+}
+
+func ExtractUserIDFromRequest(r *http.Request) (uint, error) {
+	userID, ok := r.Context().Value(UserContextKey).(uint) // Ajusta el tipo según sea necesario.
+	if !ok {
+		return 0, errors.New("could not extract user ID from context")
+	}
+	return userID, nil
 }

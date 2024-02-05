@@ -15,5 +15,6 @@ func RegisterRoutes(r *mux.Router) {
 	s.Use(middleware.JWTAuthentication)
 	RegisterUserRoutes(s)
 	RegisterDeviceRoutes(s)
+	RegisterAlertRoutes(s)
 
 }

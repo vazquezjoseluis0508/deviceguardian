@@ -38,6 +38,14 @@ func PostDeviceDataHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Verificar si el dispositivo existe
+	var device models.Device
+	if err := db.DB.First(&device, req.DeviceID).Error; err != nil {
+		utils.RespondJSON(w, http.StatusNotFound, nil, map[string]string{"error": "Device not found"})
+		return
+	}
+
+	// Crear el DeviceData con la información proporcionada
 	deviceData := models.DeviceData{
 		DeviceID:      req.DeviceID,
 		Timestamp:     utils.ParseTime(req.Timestamp),

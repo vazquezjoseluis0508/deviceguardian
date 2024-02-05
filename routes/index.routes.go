@@ -7,7 +7,8 @@ import (
 )
 
 func RegisterRoutes(r *mux.Router) {
-	RegisterAuthRoutes(r) // Registrar rutas de autenticación
+	RegisterAuthRoutes(r)       // Registrar rutas de autenticación
+	RegisterDeviceDataRoutes(r) // Registrar rutas de datos de dispositivos
 
 	// Rutas protegidas
 	s := r.PathPrefix("/api").Subrouter()

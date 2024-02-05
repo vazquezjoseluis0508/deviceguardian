@@ -23,7 +23,8 @@ type DeviceRequest struct {
 func RegisterDeviceRoutes(r *mux.Router) {
 	r.HandleFunc("/devices", CreateDeviceHandler).Methods("POST")
 	r.HandleFunc("/devices", ListDevicesHandler).Methods("GET")
-	// Agrega aquí las rutas para actualizar y eliminar dispositivos
+	r.HandleFunc("/devices/{id}", UpdateDeviceHandler).Methods("PUT")
+	r.HandleFunc("/devices/{id}", DeleteDeviceHandler).Methods("DELETE")
 }
 
 // Handler para crear un nuevo dispositivo
@@ -82,4 +83,46 @@ func ListDevicesHandler(w http.ResponseWriter, r *http.Request) {
 	utils.RespondJSON(w, http.StatusOK, devices, nil)
 }
 
-// Implementa aquí los handlers para actualizar y eliminar dispositivos
+// En routes/devices.routes.go o un archivo similar
+
+func UpdateDeviceHandler(w http.ResponseWriter, r *http.Request) {
+	// Extraer el ID del dispositivo de la URL
+	vars := mux.Vars(r)
+	deviceID := vars["id"]
+
+	// Verificar que el dispositivo pertenece al usuario logueado
+	userID, _ := auth.ExtractUserIDFromRequest(r)
+
+	var updateDevice models.Device
+	if err := json.NewDecoder(r.Body).Decode(&updateDevice); err != nil {
+		utils.RespondJSON(w, http.StatusBadRequest, nil, "Invalid request body")
+		return
+	}
+
+	var device models.Device
+	if err := db.DB.Where("id = ? AND user_id = ?", deviceID, userID).First(&device).Error; err != nil {
+		utils.RespondJSON(w, http.StatusNotFound, nil, "Device not found")
+		return
+	}
+
+	// Actualizar el dispositivo
+	db.DB.Model(&device).Updates(updateDevice)
+	utils.RespondJSON(w, http.StatusOK, device, nil)
+}
+
+// En routes/devices.routes.go o un archivo similar
+
+func DeleteDeviceHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	deviceID := vars["id"]
+
+	userID, _ := auth.ExtractUserIDFromRequest(r)
+
+	// Intentar eliminar el dispositivo
+	if err := db.DB.Where("id = ? AND user_id = ?", deviceID, userID).Delete(&models.Device{}).Error; err != nil {
+		utils.RespondJSON(w, http.StatusInternalServerError, nil, "Error deleting device")
+		return
+	}
+
+	utils.RespondJSON(w, http.StatusOK, nil, "Device deleted successfully")
+}

@@ -1,7 +1,17 @@
+// index.routes.go
 package routes
 
-import "net/http"
+import (
+	"github.com/gorilla/mux"
+	"github.com/vazquezjoseluis0508/go-gorm-api/middleware"
+)
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, World 2!"))
+func RegisterRoutes(r *mux.Router) {
+	RegisterAuthRoutes(r) // Registrar rutas de autenticación
+
+	// Rutas protegidas
+	s := r.PathPrefix("/api").Subrouter()
+	s.Use(middleware.JWTAuthentication)
+	RegisterUserRoutes(s)
+
 }

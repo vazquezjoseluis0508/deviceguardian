@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -16,12 +17,10 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/", routes.HomeHandler).Methods("GET")
-	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
-	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
-	r.HandleFunc("/users", routes.CreateUserHandler).Methods("POST")
-	r.HandleFunc("/users/{id}", routes.UpdateUserHandler).Methods("PUT")
-	r.HandleFunc("/users/{id}", routes.DeleteUserHandler).Methods("DELETE")
+	routes.RegisterRoutes(r)
+
+	// send message to the console
+	fmt.Println("Server running on port 3000")
 
 	http.ListenAndServe(":3000", r)
 

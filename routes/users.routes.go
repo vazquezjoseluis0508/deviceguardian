@@ -9,6 +9,14 @@ import (
 	"github.com/vazquezjoseluis0508/go-gorm-api/models"
 )
 
+func RegisterUserRoutes(s *mux.Router) {
+	s.HandleFunc("/users", GetUsersHandler).Methods("GET")
+	s.HandleFunc("/users/{id}", GetUserHandler).Methods("GET")
+	s.HandleFunc("/users", CreateUserHandler).Methods("POST")
+	s.HandleFunc("/users/{id}", UpdateUserHandler).Methods("PUT")
+	s.HandleFunc("/users/{id}", DeleteUserHandler).Methods("DELETE")
+}
+
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 	db.DB.Find(&users)
